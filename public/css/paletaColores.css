@@ -1,0 +1,38 @@
+    :root {
+      --primary-col: #C8102E;
+      --dark-text-color: #333333;
+    }
+    body { font-family: 'Nunito', sans-serif; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+    }
+    .align-middle {
+      vertical-align: middle;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    /* ESTILO CLAVE PARA EL MENÚ HAMBURGUESA (Móvil) */
+    /* Cuando el checkbox invisible está marcado, muestra el aside */
+    #menu-toggle:checked ~ .menu-sidebar {
+        display: flex; 
+        position: fixed; /* Usar fixed para asegurar que cubra la vista completa */
+        z-index: 50; 
+        height: 100vh; /* Ocupa toda la altura de la vista */
+    }
+    
+    /* Desenfoque del contenido principal cuando el menú está abierto */
+    #menu-toggle:checked ~ main {
+        filter: blur(2px);
+        pointer-events: none; /* Deshabilita clics en el contenido desenfocado */
+    }
+    /* El desenfoque solo aplica en móviles */
+    @media (min-width: 1024px) {
+        #menu-toggle:checked ~ main {
+            filter: none;
+            pointer-events: auto;
+        }
+    }
