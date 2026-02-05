@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
   <!-- FAVICONS -->
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16.png') }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32.png') }}?v=1">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16.png') }}?v=1">
   <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/apple-touch-icon.png') }}">
 
   <!-- Fuentes -->
