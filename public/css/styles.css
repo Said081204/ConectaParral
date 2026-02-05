@@ -104,7 +104,7 @@ body.overflow-hidden {
    ========================================================== */
 #mobileSidebar {
   position: fixed;
-  inset-y: 0;
+  visibility: 0;
   right: 0;
   width: 280px;
   background: #FFFFFF;
