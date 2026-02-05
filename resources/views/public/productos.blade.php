@@ -18,150 +18,128 @@ $productos = [
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ✅ Capas Superiores */
+        .fav-btn { z-index: 70; -webkit-tap-highlight-color: transparent; }
+        .fav-btn .fav-icon { color: #9ca3af; fill: none; transition: all .25s ease; }
+        .fav-btn.is-fav .fav-icon { color: #ef4444; fill: #ef4444; }
 
-  <style>
-    /* ✅ Favorito arriba de todo */
-    .fav-btn { z-index: 60; -webkit-tap-highlight-color: transparent; }
-    .fav-btn .fav-icon { color:#9ca3af; fill:none; transition: all .25s ease; }
-    .fav-btn.is-fav .fav-icon { color:#ef4444; fill:#ef4444; }
+        /* ✅ Cápsula "Ver Detalles" (ver.svg) */
+        .details-overlay { 
+            z-index: 50; 
+            opacity: 0; 
+            transform: scale(0.9);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            pointer-events: none;
+        }
+        
+        /* Aparece al pasar el mouse (PC) o al tocar la tarjeta (Móvil) */
+        .group:hover .details-overlay,
+        .group:active .details-overlay { 
+            opacity: 1; 
+            transform: scale(1);
+            pointer-events: auto;
+        }
 
-    /* ✅ Overlay detalles encima de imagen pero debajo del favorito */
-    .details-overlay { z-index: 30; }
+        /* ✅ Responsividad del Ver Más */
+        .is-hidden-mobile { display: none; }
+        @media (min-width: 640px) {
+            .is-hidden-mobile { display: flex !important; }
+        }
 
-    /* ✅ Botón ver detalles */
-    .view-btn { z-index: 40; }
-
-    /* ✅ Carrito */
-    .cart-btn { z-index: 60; -webkit-tap-highlight-color: transparent; transition: transform .15s ease; }
-    .cart-btn:active { transform: scale(.92); }
-    .cart-btn.is-bounce { transform: scale(1.08); }
-  </style>
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
 </head>
+<body class="bg-white">
 
-<body class="bg-gray-100">
-
-<section id="productos-galeria" class="py-20">
-  <div class="container mx-auto px-4">
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <?php foreach ($productos as $producto): ?>
-      <div class="group bg-white rounded-[2rem] p-4 hover:shadow-2xl transition flex flex-col relative">
-
-        <div class="relative overflow-hidden rounded-[1.75rem] h-44 sm:h-64">
-
-          <img src="<?= $producto['imagen_url'] ?>"
-               class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-               alt="<?= htmlspecialchars($producto['nombre']) ?>">
-
-          <!-- ✅ FAVORITO (ya arreglado) -->
-          <button
-            type="button"
-            class="fav-btn absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-md"
-            data-id="<?= $producto['id'] ?>"
-            aria-label="Agregar a favoritos">
-
-            <!-- icono inline para sí aceptar color -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="fav-icon w-6 h-6 pointer-events-none"
-                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-            </svg>
-          </button>
-
-          <!-- ✅ OVERLAY VER DETALLES -->
-          <div class="details-overlay absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition">
-            <a href="#"
-               class="view-btn bg-white px-5 py-3 rounded-2xl font-bold text-sm shadow-lg
-                      flex items-center gap-2 hover:bg-gray-50 transition"
-               aria-label="Ver detalles">
-
-              <!-- 👁 ver.svg -->
-              <img src="icons/ver.svg" alt="Ver" class="w-5 h-5" draggable="false">
-              Ver detalles
-            </a>
-          </div>
+<section id="productos-galeria" class="py-12">
+    <div class="container mx-auto px-4">
+        
+        <div class="mb-10">
+            <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Productos destacados</h2>
+            <p class="text-gray-500 mt-2">Selección de lo mejor en artesanías y productos regionales.</p>
         </div>
 
-        <!-- INFO -->
-        <div class="pt-4 flex flex-col flex-grow">
-          <span class="text-xs font-bold text-amber-600 uppercase"><?= htmlspecialchars($producto['categoria']) ?></span>
-          <h3 class="font-bold text-md leading-tight mt-1"><?= htmlspecialchars($producto['nombre']) ?></h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
+            <?php foreach ($productos as $index => $p): 
+                $mobileHidden = ($index >= 4) ? 'is-hidden-mobile' : '';
+            ?>
+            <div class="group bg-white rounded-[2.5rem] p-3 sm:p-4 shadow-sm border border-gray-100 flex flex-col relative <?= $mobileHidden ?> transition-all duration-300">
 
-          <div class="mt-auto flex justify-between items-center pt-4">
-            <span class="text-xl font-black">$<?= number_format($producto['precio'], 2) ?></span>
+                <div class="relative overflow-hidden rounded-[2rem] h-44 sm:h-64 bg-gray-50">
+                    <img src="<?= $p['imagen_url'] ?>" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
 
-            <!-- ✅ CARRITO con tu carrito.svg -->
-            <button type="button"
-                    class="cart-btn w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center"
-                    data-id="<?= $producto['id'] ?>"
-                    aria-label="Agregar al carrito">
+                    <button type="button" class="fav-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md active:scale-90" data-id="<?= $p['id'] ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="fav-icon w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                        </svg>
+                    </button>
 
-              <img src="icons/carrito.svg" alt="Carrito" class="w-5 h-5 invert" draggable="false">
+                    <div class="details-overlay absolute inset-0 flex items-center justify-center bg-black/5 sm:bg-black/10">
+                        <a href="#" class="bg-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl font-bold shadow-lg flex items-center gap-2 text-[11px] sm:text-sm text-gray-800 hover:bg-gray-50 transition-all">
+                            <img src="icons/ver.svg" alt="Ojo" class="w-4 h-4 sm:w-5 h-5" draggable="false">
+                            Ver detalles
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-col flex-grow">
+                    <span class="text-[10px] font-bold text-amber-600 tracking-widest uppercase"><?= $p['categoria'] ?></span>
+                    <h3 class="font-bold text-sm sm:text-lg leading-tight mt-1 text-gray-900 line-clamp-1"><?= $p['nombre'] ?></h3>
+                    
+                    <div class="mt-auto flex justify-between items-center pt-4">
+                        <span class="text-xl sm:text-2xl font-black text-gray-900">$<?= number_format($p['precio'], 2) ?></span>
+                        
+                        <button type="button" class="cart-btn w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white active:scale-90 transition shadow-lg">
+                            <i class="fas fa-shopping-cart text-xs sm:text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="mt-10 sm:hidden flex justify-center">
+            <button id="btnVerMas" class="px-8 py-3 rounded-2xl font-black bg-slate-900 text-white shadow-xl active:scale-95 transition">
+                Ver más productos
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
             </button>
-          </div>
         </div>
-
-      </div>
-      <?php endforeach; ?>
 
     </div>
-  </div>
 </section>
 
 <script>
-(function () {
-  "use strict";
+(function() {
+    "use strict";
 
-  const favKey = (id) => `fav_${id}`;
-
-  function initFavs() {
-    document.querySelectorAll(".fav-btn").forEach((btn) => {
-      const id = btn.dataset.id;
-      if (localStorage.getItem(favKey(id)) === "1") {
-        btn.classList.add("is-fav");
-      }
+    // Inicializar Favoritos
+    const key = (id) => `fav_${id}`;
+    document.querySelectorAll(".fav-btn").forEach(b => {
+        if(localStorage.getItem(key(b.dataset.id)) === "1") b.classList.add("is-fav");
     });
-  }
 
-  function handleClick(e) {
-    // ✅ FAVORITO
-    const favBtn = e.target.closest(".fav-btn");
-    if (favBtn) {
-      e.preventDefault();
-      e.stopPropagation();
+    // Eventos Globales
+    document.addEventListener("click", (e) => {
+        const fb = e.target.closest(".fav-btn");
+        if(fb) {
+            const active = fb.classList.toggle("is-fav");
+            localStorage.setItem(key(fb.dataset.id), active ? "1" : "0");
+            fb.animate([{transform:"scale(1)"},{transform:"scale(1.2)"},{transform:"scale(1)"}], 200);
+            return;
+        }
 
-      const id = favBtn.dataset.id;
-      const willBeActive = !favBtn.classList.contains("is-fav");
-
-      favBtn.classList.toggle("is-fav", willBeActive);
-      localStorage.setItem(favKey(id), willBeActive ? "1" : "0");
-
-      favBtn.animate(
-        [{ transform: "scale(1)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }],
-        { duration: 220, easing: "ease-out" }
-      );
-      return;
-    }
-
-    // ✅ CARRITO
-    const cartBtn = e.target.closest(".cart-btn");
-    if (cartBtn) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      cartBtn.classList.add("is-bounce");
-      setTimeout(() => cartBtn.classList.remove("is-bounce"), 160);
-      return;
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    initFavs();
-    document.addEventListener("click", handleClick);
-  });
+        const more = e.target.closest("#btnVerMas");
+        if(more) {
+            document.querySelectorAll(".is-hidden-mobile").forEach(el => el.classList.remove("is-hidden-mobile"));
+            more.remove();
+        }
+    });
 })();
 </script>
 
