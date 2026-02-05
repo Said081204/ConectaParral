@@ -21,18 +21,13 @@ $productos = [
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    /* ==============================
-       FIX: Z-INDEX y comportamiento
-       ============================== */
-
-    /* ✅ El favorito NO debe estar encima de overlays/menus */
     .fav-btn { z-index: 10; -webkit-tap-highlight-color: transparent; }
     .fav-btn .fav-icon { color:#9ca3af; fill:none; transition: all .25s ease; }
     .fav-btn.is-fav .fav-icon { color:#ef4444; fill:#ef4444; }
 
-    /* ✅ Overlay ver detalles arriba de imagen, pero normal */
     .details-overlay {
       z-index: 5;
       opacity: 0;
@@ -47,7 +42,6 @@ $productos = [
       pointer-events: auto;
     }
 
-    /* ✅ Cuando el menú móvil esté abierto, escondemos favoritos (opcional pero recomendado) */
     body.is-mobile-menu-open .fav-btn,
     body.is-mobile-menu-open .details-overlay {
       opacity: 0 !important;
@@ -55,17 +49,13 @@ $productos = [
       visibility: hidden !important;
     }
 
-    /* ✅ Asegura que tu sidebar/overlay estén por encima de TODO */
-    #sidebarOverlay { z-index: 9998 !important; }
-    #mobileSidebar  { z-index: 9999 !important; }
-
-    /* ✅ Responsividad del Ver Más */
-    .is-hidden-mobile { display: none; }
-    @media (min-width: 640px) {
-      .is-hidden-mobile { display: flex !important; }
-    }
-
     .line-clamp-1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+    
+    /* Ajuste fino para el icono de moneda */
+    .currency-icon {
+      margin-right: -1px; /* Pegamos el signo al número */
+      stroke-width: 2.5px; /* Un poco más grueso para que resalte */
+    }
   </style>
 </head>
 
@@ -90,7 +80,6 @@ $productos = [
                class="w-full h-full object-cover transition duration-700 group-hover:scale-105"
                alt="<?= htmlspecialchars($p['nombre']) ?>">
 
-          <!-- ✅ FAVORITO -->
           <button type="button"
                   class="fav-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-md active:scale-90"
                   data-id="<?= $p['id'] ?>"
@@ -103,14 +92,11 @@ $productos = [
             </svg>
           </button>
 
-          <!-- ✅ VER DETALLES -->
           <div class="details-overlay absolute inset-0 flex items-center justify-center bg-black/10">
             <a href="#"
                class="bg-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl font-bold shadow-lg
                       flex items-center gap-2 text-[11px] sm:text-sm text-gray-800 hover:bg-gray-50 transition-all"
-               aria-label="Ver detalles del producto"
                data-product-id="<?= $p['id'] ?>">
-              <img src="{{ asset('icons/ver.svg') }}" alt="Ver" class="w-4 h-4 sm:w-5 sm:h-5" draggable="false">
               Ver detalles
             </a>
           </div>
@@ -126,32 +112,24 @@ $productos = [
           </h3>
 
           <div class="mt-auto flex justify-between items-center pt-4">
-            <!-- ✅ PRECIO -->
-            <span class="inline-flex items-end gap-2 text-gray-900">
-              <img src="{{ asset('icons/precio.svg') }}" alt="Precio" class="w-5 h-5 sm:w-6 sm:h-6" draggable="false">
-              <span class="text-xl sm:text-2xl font-black leading-none"><?= number_format($p['precio'], 2) ?></span>
-              <span class="text-[10px] sm:text-xs font-bold tracking-widest text-gray-500 mb-0.5">MXN</span>
+            <span class="inline-flex items-baseline text-gray-900">
+              <i data-lucide="dollar-sign" class="currency-icon w-4 h-4 sm:w-5 sm:h-5 self-center"></i>
+              <span class="text-xl sm:text-2xl font-black tracking-tight"><?= number_format($p['precio'], 2) ?></span>
+              <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 ml-1 uppercase">MXN</span>
             </span>
 
-            <!-- ✅ CARRITO -->
             <button type="button"
                     class="cart-btn w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white active:scale-90 transition shadow-lg"
-                    data-id="<?= $p['id'] ?>"
-                    aria-label="Agregar al carrito">
-              <img src="{{ asset('icons/carrito.svg') }}" alt="Carrito" class="w-4 h-4 sm:w-5 sm:h-5 invert" draggable="false">
+                    data-id="<?= $p['id'] ?>">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
             </button>
           </div>
         </div>
 
       </div>
       <?php endforeach; ?>
-    </div>
-
-    <div class="mt-10 sm:hidden flex justify-center">
-      <button id="btnVerMas"
-              class="px-8 py-3 rounded-2xl font-black bg-slate-900 text-white shadow-xl active:scale-95 transition">
-        Ver más productos
-      </button>
     </div>
 
   </div>
@@ -161,74 +139,31 @@ $productos = [
 (function() {
   "use strict";
 
+  // Inicializar Lucide
+  lucide.createIcons();
+
   const key = (id) => `fav_${id}`;
 
-  function syncBodyMenuState() {
-    // Si tu header ya usa estos IDs, esto detecta si el menú está abierto
-    const sidebar = document.getElementById("mobileSidebar");
-    const overlay = document.getElementById("sidebarOverlay");
-
-    const isOpen =
-      (sidebar && !sidebar.classList.contains("translate-x-full")) ||
-      (overlay && !overlay.classList.contains("hidden"));
-
-    document.body.classList.toggle("is-mobile-menu-open", !!isOpen);
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
-    // ✅ iniciar favoritos
     document.querySelectorAll(".fav-btn").forEach((b) => {
       if (localStorage.getItem(key(b.dataset.id)) === "1") b.classList.add("is-fav");
     });
-
-    // ✅ detectar estado inicial del menú
-    syncBodyMenuState();
   });
 
   document.addEventListener("click", (e) => {
-    // ✅ FAVORITO
     const fb = e.target.closest(".fav-btn");
     if (fb) {
-      e.preventDefault();
-      e.stopPropagation();
-      const active = fb.classList.toggle("is-fav");
-      localStorage.setItem(key(fb.dataset.id), active ? "1" : "0");
-      fb.animate([{transform:"scale(1)"},{transform:"scale(1.2)"},{transform:"scale(1)"}], {duration:200, easing:"ease-out"});
+      const isActive = fb.classList.toggle("is-fav");
+      localStorage.setItem(key(fb.dataset.id), isActive ? "1" : "0");
       return;
     }
-
-    // ✅ VER MÁS
+    
+    // Simulación de "Ver más"
     const more = e.target.closest("#btnVerMas");
     if (more) {
       document.querySelectorAll(".is-hidden-mobile").forEach(el => el.classList.remove("is-hidden-mobile"));
       more.remove();
-      return;
     }
-
-    // ✅ CARRITO anim
-    const cart = e.target.closest(".cart-btn");
-    if (cart) {
-      e.preventDefault();
-      e.stopPropagation();
-      cart.animate([{transform:"scale(1)"},{transform:"scale(1.12)"},{transform:"scale(1)"}], {duration:180, easing:"ease-out"});
-      return;
-    }
-
-    // ✅ VER DETALLES (no navega por ahora)
-    const view = e.target.closest("[data-product-id]");
-    if (view && view.tagName === "A") {
-      e.preventDefault();
-      return;
-    }
-  });
-
-  // ✅ Observa cambios del sidebar/overlay (cuando abras/cierres el menú)
-  const observer = new MutationObserver(() => syncBodyMenuState());
-  window.addEventListener("load", () => {
-    const sidebar = document.getElementById("mobileSidebar");
-    const overlay = document.getElementById("sidebarOverlay");
-    if (sidebar) observer.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
-    if (overlay) observer.observe(overlay, { attributes: true, attributeFilter: ["class"] });
   });
 })();
 </script>

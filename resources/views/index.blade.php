@@ -37,7 +37,7 @@
 
   <!-- JS -->
   <script src="{{ asset('js/public/header.js') }}"></script>
-  <script src="{{ asset('js/public/productos.js') }}"></script>
+ <!-- <script src="{{ asset('js/public/productos.js') }}"></script>-->
  
 
 </body>
