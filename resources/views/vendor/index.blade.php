@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Vendedor | ConectaParral</title>
 
-  @vite(['resources/css/app.css','resources/css/vendor.css','resources/js/app.js'])
+  @vite(['resources/css/vendor.css','resources/js/app.js'])
 </head>
 
 <body class="vp-page">
