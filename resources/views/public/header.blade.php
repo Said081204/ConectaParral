@@ -66,8 +66,29 @@
         </svg>
       </button>
 
-      {{-- ================= USUARIO ================= --}}
-      <a href="{{ url('/login') }}"
+      {{-- ================= USUARIO (adaptado con @guest / @auth) ================= --}}
+
+      {{-- INVITADO --}}
+      @guest
+      <a href="{{ route('login') }}"
+         class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl
+                hover:bg-gray-50 active:scale-95 transition">
+
+        <img src="{{ asset('icons/usuario.svg') }}"
+             alt="Iniciar sesión"
+             class="w-6 h-6 md:w-7 md:h-7 select-none"
+             draggable="false">
+
+        <div class="hidden lg:flex flex-col -space-y-1">
+          <span class="text-[12px] text-gray-500">Hola</span>
+          <span class="text-[15px] font-bold text-gray-900">Inicia sesión</span>
+        </div>
+      </a>
+      @endguest
+
+      {{-- LOGUEADO --}}
+      @auth
+      <a href="{{ url('/mi-cuenta') }}"
          class="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl
                 hover:bg-gray-50 active:scale-95 transition">
 
@@ -77,10 +98,11 @@
              draggable="false">
 
         <div class="hidden lg:flex flex-col -space-y-1">
-          <span class="text-[12px] text-gray-500">Hola, Identifícate</span>
+          <span class="text-[12px] text-gray-500">Hola, {{ auth()->user()->name }}</span>
           <span class="text-[15px] font-bold text-gray-900">Mi Cuenta</span>
         </div>
       </a>
+      @endauth
 
       {{-- ================= PEDIDOS ================= --}}
       <a href="{{ url('/orders') }}"
@@ -177,7 +199,27 @@
       <a href="{{ url('/') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Inicio</a>
       <a href="{{ url('/categorias') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Categorías</a>
       <a href="{{ url('/ofertas') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Ofertas</a>
-      <a href="{{ url('/login') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Mi Cuenta</a>
+
+      {{-- Cuenta (móvil) --}}
+      @guest
+        <a href="{{ route('login') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Iniciar sesión</a>
+        <a href="{{ route('register') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Registrarme</a>
+      @endguest
+
+      @auth
+        <span class="py-3 px-2 text-gray-500">Hola, {{ auth()->user()->name }}</span>
+        <a href="{{ url('/mi-cuenta') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Mi Cuenta</a>
+
+        {{-- Logout (POST) --}}
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit"
+            class="w-full text-left py-3 px-2 text-red-600 hover:bg-red-50 rounded-lg">
+            Cerrar sesión
+          </button>
+        </form>
+      @endauth
+
       <a href="{{ url('/orders') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Pedidos</a>
       <a href="{{ url('/cart') }}" class="py-3 px-2 hover:bg-blue-50 rounded-lg">Carrito</a>
     </div>

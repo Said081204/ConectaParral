@@ -1,0 +1,92 @@
+/* Tailwind (v4) */
+@import "tailwindcss";
+
+/* Sources */
+@source "../views/vendor/**/*.blade.php";
+@source "../js/**/*.{js,ts,jsx,tsx,vue}";
+@source "../../storage/framework/views/*.php";
+@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+
+/* Usa tus variables (ya definidas en styles.css) */
+:root{
+  --vp-primary: var(--primary-color);
+  --vp-accent: var(--accent-color);
+  --vp-text: var(--dark-text-color);
+  --vp-muted: var(--gray-text-color);
+  --vp-border: var(--light-border-color);
+  --vp-surface: var(--light-background-color);
+}
+
+@layer components {
+
+  .vp-page{
+    @apply min-h-screen bg-gray-50 antialiased;
+    color: var(--vp-text);
+    font-family: var(--font-family-body);
+  }
+
+  .vp-card{
+    @apply bg-white border p-5;
+    border-color: var(--vp-border);
+  }
+
+  .vp-title{
+    @apply text-2xl sm:text-3xl font-extrabold tracking-tight;
+    color: var(--vp-text);
+  }
+
+  .vp-subtitle{
+    @apply text-sm mt-1;
+    color: var(--vp-muted);
+  }
+
+  /* ✅ BOTONES (sin usar vp-btn dentro de @apply) */
+  .vp-btn-primary{
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-4 font-bold transition active:scale-[0.98]
+           text-white;
+    background: var(--vp-primary);
+  }
+  .vp-btn-primary:hover{ filter: brightness(.95); }
+
+  .vp-btn-secondary{
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-4 font-bold transition active:scale-[0.98]
+           border bg-white hover:bg-gray-50;
+    border-color: var(--vp-border);
+    color: var(--vp-text);
+  }
+
+  .vp-btn-ghost{
+    @apply inline-flex items-center justify-center gap-2
+           h-11 px-4 font-bold transition active:scale-[0.98]
+           hover:bg-gray-100;
+    color: var(--vp-text);
+  }
+
+  /* Inputs */
+  .vp-input{
+    @apply w-full h-11 px-3 border bg-white outline-none;
+    border-color: var(--vp-border);
+  }
+  .vp-input:focus{
+    border-color: var(--vp-accent);
+    box-shadow: 0 0 0 3px rgba(245,158,11,.20);
+  }
+
+  .vp-select{
+    @apply w-full h-11 px-3 border bg-white outline-none;
+    border-color: var(--vp-border);
+  }
+
+  .vp-textarea{
+    @apply w-full px-3 py-2 border bg-white outline-none;
+    border-color: var(--vp-border);
+  }
+
+  /* Badges */
+  .vp-badge{
+    @apply inline-flex items-center px-2.5 py-1 text-xs font-bold border bg-white;
+    border-color: var(--vp-border);
+  }
+}

@@ -6,15 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+            // Datos básicos
             $table->string('name');
             $table->string('email')->unique();
+
+            // Extra útil para e-commerce (NO obliga a pedirlo al registrarse)
+            $table->string('phone', 20)->nullable();
+
+            // Roles: todos inician como cliente
+            $table->string('role')->default('cliente'); // cliente | vendedor | admin
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -37,9 +43,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
